@@ -1,0 +1,29 @@
+{
+        "project_info": {
+        "project_number": "35548863510",
+        "project_id": "sololifetalk",
+        "storage_bucket": "sololifetalk.firebasestorage.app"
+        },
+        "client": [
+        {
+        "client_info": {
+        "mobilesdk_app_id": "1:35548863510:android:c0b3571d359627688e2937",
+        "android_client_info": {
+        "package_name": "hnu.multimedia.sololifetalk"
+        }
+        },
+        "oauth_client": [],
+        "api_key": [
+        {
+        "current_key": "AIzaSyDfDiabmJuQt0lE9NO3xhcDuPjKH-7Q3oM"
+        }
+        ],
+        "services": {
+        "appinvite_service": {
+        "other_platform_oauth_client": []
+        }
+        }
+        }
+        ],
+        "configuration_version": "1"
+        }

@@ -1,20 +1,30 @@
 package hnu.multimedia.sololifetalk
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import hnu.multimedia.sololifetalk.auth.IntroActivity
+import hnu.multimedia.sololifetalk.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private lateinit var auth : FirebaseAuth
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        setContentView(binding.root)
+        auth = Firebase.auth
+
+        binding.buttonLogout.setOnClickListener {
+            auth.signOut()
+            val intent = Intent(this, IntroActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }
