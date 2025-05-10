@@ -35,27 +35,37 @@ class ContentAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.textViewTitle.text = list[position].title
+        var isBookmarked: Boolean = false
+
         Glide.with(holder.binding.root.context)
             .load(list[position].imageURL)
             .into(holder.binding.imageViewPicture)
 
-        holder.binding.root.setOnClickListener {
+        holder.binding.imageViewPicture.setOnClickListener {
             val intent = Intent(holder.binding.root.context, ContentShowActivity::class.java)
             intent.putExtra("url", list[position].webURL)
             holder.binding.root.context.startActivity(intent, null)
         }
 
+        val ref = database.getReference("bookmarks")
+        val loginUid = Firebase.auth.currentUser?.uid.toString()
+        val docUid = keyList[position]
+
         holder.binding.imageViewBookmark.setOnClickListener {
-            val ref = database.getReference("bookmarks")
-            val loginUid = Firebase.auth.currentUser?.uid.toString()
-            val docUid = keyList[position]
-            ref.child(loginUid).child(docUid).setValue(true)
+            if (isBookmarked) {
+                ref.child(loginUid).child(docUid).removeValue()
+            } else {
+                ref.child(loginUid).child(docUid).setValue(true)
+            }
+            isBookmarked = !isBookmarked
         }
 
-        if (bookmarks.contains(keyList[position])) {
+        isBookmarked = if (bookmarks.contains(keyList[position])) {
             holder.binding.imageViewBookmark.setImageResource(R.drawable.bookmark_color)
+            true
         } else {
             holder.binding.imageViewBookmark.setImageResource(R.drawable.bookmark_white)
+            false
         }
     }
 }
