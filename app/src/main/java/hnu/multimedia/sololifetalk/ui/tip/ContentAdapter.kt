@@ -11,6 +11,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import hnu.multimedia.sololifetalk.R
 import hnu.multimedia.sololifetalk.databinding.ContentItemBinding
+import hnu.multimedia.sololifetalk.util.FirebaseRef
 
 class ContentAdapter(
     private val list: List<ContentModel>,
@@ -47,7 +48,7 @@ class ContentAdapter(
             holder.binding.root.context.startActivity(intent, null)
         }
 
-        val ref = database.getReference("bookmarks")
+        val ref = FirebaseRef.bookmarks
         val loginUid = Firebase.auth.currentUser?.uid.toString()
         val docUid = keyList[position]
 

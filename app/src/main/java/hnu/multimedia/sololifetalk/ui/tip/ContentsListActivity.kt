@@ -16,6 +16,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import hnu.multimedia.sololifetalk.R
 import hnu.multimedia.sololifetalk.databinding.ActivityContentsListBinding
+import hnu.multimedia.sololifetalk.util.FirebaseRef
 
 class ContentsListActivity : AppCompatActivity() {
 
@@ -28,7 +29,7 @@ class ContentsListActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val database = Firebase.database
-        val myRef = database.getReference("contents")
+        val myRef = FirebaseRef.contents
         val category = intent.getIntExtra("category", 0)
 
         // firebase의 realtime database에 데이터 넣기
@@ -111,7 +112,7 @@ class ContentsListActivity : AppCompatActivity() {
 
     private fun getBookmarks() {
         database = Firebase.database
-        val ref = database.getReference("bookmarks").child(Firebase.auth.currentUser?.uid.toString())
+        val ref = FirebaseRef.bookmarks.child(Firebase.auth.currentUser?.uid.toString())
         val postListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 bookmarks.clear()
