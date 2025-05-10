@@ -34,7 +34,7 @@ class ContentAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.textViewTitle.text = list[position].title
+        holder.binding.textViewContentItemTitle.text = list[position].title
         var isBookmarked: Boolean = false
 
         Glide.with(holder.binding.root.context)
