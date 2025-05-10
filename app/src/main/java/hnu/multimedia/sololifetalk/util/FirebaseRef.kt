@@ -9,6 +9,6 @@ class FirebaseRef {
         private val database = Firebase.database
         val contents = database.getReference("contents")
         val bookmarks = database.getReference("bookmarks")
-        val talk = database.getReference("talks")
+        val talks = database.getReference("talks")
     }
 }

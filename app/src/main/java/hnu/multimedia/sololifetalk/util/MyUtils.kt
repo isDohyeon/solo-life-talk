@@ -9,11 +9,11 @@ class MyUtils {
 
     companion object {
 
-        fun Date.toString(): String {
+        fun Date.formatToString(): String {
             val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
             return formatter.format(this)
         }
-        
+
         fun getCurrentDateTime(): Date {
             return Calendar.getInstance().time
         }

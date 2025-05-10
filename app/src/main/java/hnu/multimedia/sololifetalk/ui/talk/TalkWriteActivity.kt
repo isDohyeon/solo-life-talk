@@ -20,7 +20,7 @@ class TalkWriteActivity : AppCompatActivity() {
             val title = binding.editTextTitle.text.toString()
             val content = binding.editTextContent.text.toString()
             val uid = Firebase.auth.currentUser?.uid.toString()
-            FirebaseRef.talk.push().setValue(TalkModel(title, content, uid, MyUtils.getCurrentDateTime()))
+            FirebaseRef.talks.push().setValue(TalkModel(title, content, uid, MyUtils.getCurrentDateTime()))
             finish()
         }
     }

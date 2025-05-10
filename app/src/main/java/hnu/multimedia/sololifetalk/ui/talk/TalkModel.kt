@@ -1,10 +1,11 @@
 package hnu.multimedia.sololifetalk.ui.talk
 
+import hnu.multimedia.sololifetalk.util.MyUtils
 import java.util.Date
 
 data class TalkModel(
-    val title: String,
-    val content: String,
-    val uid: String,
-    val dateTime: Date
+    var title: String = "",
+    var content: String = "",
+    var uid: String = "",
+    var dateTime: Date = MyUtils.getCurrentDateTime()
 )
