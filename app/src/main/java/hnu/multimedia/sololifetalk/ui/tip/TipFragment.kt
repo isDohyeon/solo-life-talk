@@ -1,5 +1,6 @@
 package hnu.multimedia.sololifetalk.ui.tip
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,11 @@ class TipFragment : Fragment() {
     ): View {
         _binding = FragmentTipBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        binding.imageView0.setOnClickListener {
+            val intent = Intent(context, ContentsListActivity::class.java)
+            startActivity(intent)
+        }
 
         return root
     }
