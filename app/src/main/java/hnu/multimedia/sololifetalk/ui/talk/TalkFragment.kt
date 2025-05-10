@@ -1,5 +1,6 @@
 package hnu.multimedia.sololifetalk.ui.talk
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,25 +10,19 @@ import hnu.multimedia.sololifetalk.databinding.FragmentTalkBinding
 
 class TalkFragment : Fragment() {
 
-    private var _binding: FragmentTalkBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private val binding by lazy { FragmentTalkBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTalkBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        return root
-    }
+        binding.imageViewWrite.setOnClickListener {
+            val intent = Intent(context, TalkWriteActivity::class.java)
+            startActivity(intent)
+        }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return binding.root
     }
 }

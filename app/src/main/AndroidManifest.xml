@@ -15,6 +15,9 @@
         android:theme="@style/Theme.SoloLifeTalk"
         tools:targetApi="31">
         <activity
+            android:name=".ui.talk.TalkWriteActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.tip.ContentShowActivity"
             android:exported="false" />
         <activity
