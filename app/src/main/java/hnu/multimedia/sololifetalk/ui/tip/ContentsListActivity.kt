@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -18,6 +20,8 @@ import hnu.multimedia.sololifetalk.databinding.ActivityContentsListBinding
 class ContentsListActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityContentsListBinding.inflate(layoutInflater) }
+    private val bookmarks = mutableListOf<String>()
+    private lateinit var database : FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +67,16 @@ class ContentsListActivity : AppCompatActivity() {
 //        ))
 
         val list = mutableListOf<ContentModel>()
+        val keyList = mutableListOf<String>()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 list.clear()
+                keyList.clear()
                 for (dataModel in snapshot.children) {
                     val value = dataModel.getValue(ContentModel::class.java)
                     value?.let { list.add(value) }
+                    keyList.add(dataModel.key.toString())
                 }
                 binding.recyclerView.adapter?.notifyDataSetChanged()
             }
@@ -80,6 +88,26 @@ class ContentsListActivity : AppCompatActivity() {
         myRef.addValueEventListener(postListener)
 
         binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
-        binding.recyclerView.adapter = ContentAdapter(list)
+        binding.recyclerView.adapter = ContentAdapter(list, keyList, bookmarks)
+
+        getBookmarks()
+    }
+
+    private fun getBookmarks() {
+        database = Firebase.database
+        val ref = database.getReference("bookmarks").child(Firebase.auth.currentUser?.uid.toString())
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                bookmarks.clear()
+                for (dataModel in snapshot.children) {
+                    bookmarks.add(dataModel.key.toString())
+                }
+                binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("ContentsListActivity", "onCancelled: $error")
+            }
+        }
+        ref.addValueEventListener(postListener)
     }
 }
