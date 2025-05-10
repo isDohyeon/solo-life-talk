@@ -1,60 +1,79 @@
 package hnu.multimedia.sololifetalk.ui.bookmarks
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import hnu.multimedia.sololifetalk.R
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import hnu.multimedia.sololifetalk.databinding.FragmentBookmarkBinding
+import hnu.multimedia.sololifetalk.ui.tip.ContentAdapter
+import hnu.multimedia.sololifetalk.ui.tip.ContentModel
+import hnu.multimedia.sololifetalk.util.FirebaseRef
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [BookmarkFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class BookmarkFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private val binding by lazy { FragmentBookmarkBinding.inflate(layoutInflater) }
+    private val bookmarks = mutableListOf<String>()
+    private val list = mutableListOf<ContentModel>()
+    private val keyList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bookmark, container, false)
+        getBookmarks()
+        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerView.adapter = ContentAdapter(list, keyList, bookmarks)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BookmarkFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BookmarkFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun getBookmarks() {
+        val ref = FirebaseRef.bookmarks.child(Firebase.auth.currentUser?.uid.toString())
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                bookmarks.clear()
+                for (dataModel in snapshot.children) {
+                    bookmarks.add(dataModel.key.toString())
                 }
+                getContents()
             }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("ContentsListActivity", "onCancelled: $error")
+            }
+        }
+        ref.addValueEventListener(postListener)
+    }
+
+    private fun getContents() {
+        val ref = FirebaseRef.contents
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                list.clear()
+                keyList.clear()
+                for (dataModel in snapshot.children) {
+                    if (bookmarks.contains(dataModel.key.toString())) {
+                        val value = dataModel.getValue(ContentModel::class.java)
+                        value?.let { list.add(value) }
+                        keyList.add(dataModel.key.toString())
+                    }
+                }
+                binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("ContentsListActivity", "onCancelled: $error")
+            }
+        }
+        ref.addValueEventListener(postListener)
     }
 }
