@@ -1,5 +1,6 @@
 package hnu.multimedia.sololifetalk.ui.talk
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +29,16 @@ class TalkDetailActivity : AppCompatActivity() {
             getTalkModel(key)
             getPhoto(key)
             removePost(key)
+            editPost(key)
+        }
+    }
 
+    private fun editPost(key: String?) {
+        binding.buttonEdit.setOnClickListener {
+            val intent = Intent(this, TalkEditActivity::class.java)
+            intent.putExtra("key", key)
+            startActivity(intent)
+            finish()
         }
     }
 
