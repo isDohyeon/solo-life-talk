@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -60,6 +62,12 @@ class TalkDetailActivity : AppCompatActivity() {
                 binding.textViewTitle.text = value?.title
                 binding.textViewDate.text = value?.dateTime?.formatToString()
                 binding.textViewContent.text = value?.content
+                val writerUid = value?.uid.toString()
+                val loginUid = Firebase.auth.currentUser?.uid.toString()
+                if (writerUid != loginUid) {
+                    binding.buttonEdit.isVisible = false
+                    binding.buttonDelete.isVisible = false
+                }
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("TalkDetailActivity", "onCancelled: $error")

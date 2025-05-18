@@ -4,6 +4,9 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import hnu.multimedia.sololifetalk.R
 import hnu.multimedia.sololifetalk.databinding.TalkItemBinding
 import hnu.multimedia.sololifetalk.util.MyUtils.Companion.formatToString
 
@@ -32,6 +35,11 @@ class TalkAdapter(
             val intent = Intent(holder.binding.root.context, TalkDetailActivity::class.java)
             intent.putExtra("key", keyList[position])
             holder.binding.root.context.startActivity(intent)
+        }
+        val writerUid = list[position].uid
+        val loginUid = Firebase.auth.currentUser?.uid
+        if (writerUid == loginUid) {
+            holder.binding.root.setBackgroundResource(R.color.paleYellow)
         }
     }
 }
