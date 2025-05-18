@@ -25,8 +25,7 @@ class TalkWriteActivity : AppCompatActivity() {
             val content = binding.editTextContent.text.toString()
             val uid = Firebase.auth.currentUser?.uid.toString()
             val pushRef = FirebaseRef.talks.push()
-            FirebaseRef.talks.push()
-                .setValue(TalkModel(title, content, uid, MyUtils.getCurrentDateTime()))
+            pushRef.setValue(TalkModel(title, content, uid, MyUtils.getCurrentDateTime()))
             Firebase.storage.reference.child("${pushRef.key.toString()}.jpg").putFile(uri)
             finish()
         }
@@ -35,10 +34,9 @@ class TalkWriteActivity : AppCompatActivity() {
             _uri ->
             _uri.let {
                 uri = _uri
-                binding.imageViewPhoto.setImageURI(uri)
+                binding.imageViewPhoto.setImageURI(_uri)
             }
         }
-
         binding.imageViewPhoto.setOnClickListener {
             launcher.launch("image/*")
         }
