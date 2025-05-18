@@ -1,35 +1,37 @@
 package hnu.multimedia.sololifetalk.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import hnu.multimedia.sololifetalk.auth.IntroActivity
 import hnu.multimedia.sololifetalk.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private val binding by lazy { FragmentHomeBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        return root
-    }
+        val email = Firebase.auth.currentUser?.email ?: ""
+        val greeting = "안녕하세요! ${email} 님"
+        binding.textViewHelloMessage.text = greeting
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        binding.buttonLogout.setOnClickListener {
+            Firebase.auth.signOut()
+            val intent = Intent(context, IntroActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+
+        return binding.root
     }
 }
