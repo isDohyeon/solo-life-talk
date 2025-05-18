@@ -26,7 +26,9 @@ class TalkWriteActivity : AppCompatActivity() {
             val uid = Firebase.auth.currentUser?.uid.toString()
             val pushRef = FirebaseRef.talks.push()
             pushRef.setValue(TalkModel(title, content, uid, MyUtils.getCurrentDateTime()))
-            Firebase.storage.reference.child("${pushRef.key.toString()}.jpg").putFile(uri)
+            if (uri != Uri.EMPTY) {
+                Firebase.storage.reference.child("${pushRef.key.toString()}.jpg").putFile(uri)
+            }
             finish()
         }
 

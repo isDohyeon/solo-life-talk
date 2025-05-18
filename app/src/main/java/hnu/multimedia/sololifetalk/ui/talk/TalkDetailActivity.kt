@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import hnu.multimedia.sololifetalk.databinding.ActivityTalkDetailBinding
 import hnu.multimedia.sololifetalk.util.FirebaseRef
@@ -16,14 +17,29 @@ import hnu.multimedia.sololifetalk.util.MyUtils.Companion.formatToString
 class TalkDetailActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityTalkDetailBinding.inflate(layoutInflater) }
+    private var isPhotoAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         val key = intent.getStringExtra("key")
-        key?.let { getTalkModel(key) }
-        key?.let { getPhoto(key) }
+        key?.let {
+            getTalkModel(key)
+            getPhoto(key)
+            removePost(key)
+
+        }
+    }
+
+    private fun removePost(key: String?) {
+        binding.buttonDelete.setOnClickListener {
+            FirebaseRef.talks.child(key!!).removeValue()
+            if (isPhotoAvailable) {
+                Firebase.storage.reference.child("$key.jpg").delete()
+            }
+            finish()
+        }
     }
 
     private fun getTalkModel(key: String) {
@@ -46,6 +62,7 @@ class TalkDetailActivity : AppCompatActivity() {
         val imageReference = Firebase.storage.reference.child("$key.jpg")
         imageReference.downloadUrl.addOnSuccessListener {
             uri -> Glide.with(this).load(uri).into(binding.imageViewPhoto)
+            isPhotoAvailable = true
         }
     }
 }
