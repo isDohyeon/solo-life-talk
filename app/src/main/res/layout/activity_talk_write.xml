@@ -29,7 +29,7 @@
     <EditText
         android:id="@+id/editTextContent"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:ems="10"
         android:hint="내용"
         android:inputType="text|textMultiLine" />
@@ -37,7 +37,7 @@
     <ImageView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="110dp"
         android:layout_marginTop="10dp"
         app:srcCompat="@drawable/btn_plus" />
 
